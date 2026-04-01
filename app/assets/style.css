@@ -1,0 +1,88 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #0f1117;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+.main-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 1.2rem 2rem;
+    border-bottom: 1px solid #2a2a4a;
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.main-header p {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.85rem;
+    color: #8888aa;
+}
+
+.controls-bar {
+    background: #161625;
+    padding: 0.8rem 2rem;
+    border-bottom: 1px solid #2a2a4a;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.view-card {
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    border-radius: 8px;
+    padding: 0.8rem;
+    height: 100%;
+}
+
+.view-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #a0a0cc;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dash-table-container {
+    background: #1a1a2e !important;
+}
+
+.dash-spreadsheet-container .dash-spreadsheet-inner th {
+    background-color: #16213e !important;
+    color: #a0a0cc !important;
+    border-bottom: 1px solid #2a2a4a !important;
+}
+
+.dash-spreadsheet-container .dash-spreadsheet-inner td {
+    background-color: #1a1a2e !important;
+    color: #e0e0e0 !important;
+    border-bottom: 1px solid #222240 !important;
+}
+
+.Select-control, .Select-menu-outer {
+    background-color: #1a1a2e !important;
+    border-color: #2a2a4a !important;
+    color: #e0e0e0 !important;
+}
+
+.rc-slider-track {
+    background-color: #4a6cf7 !important;
+}
+
+.rc-slider-handle {
+    border-color: #4a6cf7 !important;
+    background-color: #4a6cf7 !important;
+}
+
+.rc-slider-rail {
+    background-color: #2a2a4a !important;
+}
