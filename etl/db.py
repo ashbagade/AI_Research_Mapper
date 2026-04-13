@@ -1,5 +1,7 @@
 """Shared DuckDB connection and schema bootstrapping."""
 
+from __future__ import annotations
+
 import duckdb
 from pathlib import Path
 import config
