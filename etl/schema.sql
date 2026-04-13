@@ -93,3 +93,16 @@ CREATE TABLE IF NOT EXISTS paper_projections (
     umap_y     DOUBLE,
     cluster_id INTEGER
 );
+
+-- LDA topic modeling results
+CREATE TABLE IF NOT EXISTS lda_topic_words (
+    topic_id   INTEGER PRIMARY KEY,
+    top_words  VARCHAR,
+    label      VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS paper_lda (
+    work_id      VARCHAR PRIMARY KEY,
+    lda_topic_id INTEGER,
+    probability  DOUBLE
+);

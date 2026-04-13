@@ -8,6 +8,7 @@ from analytics.topic_evolution import run as run_topic_evolution
 from analytics.emerging_topics import run as run_emerging_topics
 from analytics.collaboration_network import run as run_collaboration
 from analytics.paper_clustering import run as run_clustering
+from analytics.lda_baseline import run as run_lda
 
 
 def main():
@@ -18,6 +19,8 @@ def main():
     run_collaboration()
     print()
     run_clustering()
+    print()
+    run_lda()
 
 
 if __name__ == "__main__":

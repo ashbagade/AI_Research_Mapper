@@ -70,7 +70,44 @@ def main():
         print(f"{wid:<6} {cid:>7}  {ux:>8.3f}  {uy:>8.3f}  {title[:40]}")
 
     n_clusters = len(set(r[4] for r in rows))
-    print(f"\n✅ PASS — {len(rows)} papers projected into {n_clusters} clusters")
+    print(f"\n✅ K-Means PASS — {len(rows)} papers projected into {n_clusters} clusters")
+
+    # ── 5. Run LDA baseline ────────────────────────────────────────────
+    from analytics.lda_baseline import compute_lda_topics
+
+    print("\n" + "=" * 60)
+    compute_lda_topics(con, n_topics=3)
+
+    # ── 6. Verify LDA results ──────────────────────────────────────────
+    print("\n=== LDA Topic Keywords ===")
+    lda_topics = con.execute(
+        "SELECT topic_id, label, top_words FROM lda_topic_words ORDER BY topic_id"
+    ).fetchall()
+
+    if not lda_topics:
+        print("❌ FAIL — lda_topic_words is empty!")
+        con.close()
+        sys.exit(1)
+
+    for tid, label, words in lda_topics:
+        print(f"  Topic {tid} [{label}]")
+        print(f"    {words}\n")
+
+    print("=== LDA Paper Assignments ===")
+    lda_papers = con.execute("""
+        SELECT pl.work_id, w.title, pl.lda_topic_id, pl.probability
+        FROM paper_lda pl
+        JOIN works w ON pl.work_id = w.work_id
+        ORDER BY pl.lda_topic_id, pl.work_id
+    """).fetchall()
+
+    print(f"{'ID':<6} {'Topic':>5}  {'Prob':>6}  Title")
+    print("-" * 70)
+    for wid, title, tid, prob in lda_papers:
+        print(f"{wid:<6} {tid:>5}  {prob:>6.3f}  {title[:45]}")
+
+    n_lda = len(set(r[2] for r in lda_papers))
+    print(f"\n✅ LDA PASS — {len(lda_papers)} papers assigned across {n_lda} topics")
 
     con.close()
 

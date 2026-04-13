@@ -8,7 +8,7 @@ Based on the team progress report, the core architecture (ETL, DuckDB, baseline 
 - [x] Select and load a document-level embedding model (e.g., `SPECTER` or `SciBERT` via HuggingFace `sentence-transformers`).
 - [x] Generate embeddings for the abstract/content data of the papers.
 - [x] Implement k-means clustering on the generated embeddings.
-- [ ] Implement a baseline Latent Dirichlet Allocation (LDA) model to compare against.
+- [x] Implement a baseline Latent Dirichlet Allocation (LDA) model to compare against.
 - [x] Integrate embedding and clustering outputs back into the DuckDB database (note: `schema.sql` already has `umap_x` and `umap_y` columns prepared).
 
 ## 2. Alluvial View & Merge/Split Detection
