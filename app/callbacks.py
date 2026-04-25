@@ -8,6 +8,7 @@ from app.views.trend_view import build_trend_figure
 from app.views.emerging_view import build_emerging_heatmap, build_emerging_table_data
 from app.views.network_view import build_cytoscape_elements
 from app.views.evidence_view import filter_evidence
+from app.views.alluvial_view import build_alluvial_figure
 
 
 def _load_topic_year_stats(year_range: tuple[int, int] | None = None) -> pd.DataFrame:
@@ -40,6 +41,34 @@ def _load_network_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     edges = con.execute("SELECT * FROM community_edges").df()
     con.close()
     return nodes, edges
+
+
+def _load_works_topic_year_stats(year_range: tuple[int, int] | None = None) -> pd.DataFrame:
+    """Compute topic-year work counts from actual ingested papers (not aggregates)."""
+    con = get_connection(read_only=True)
+    q = """
+        SELECT wt.topic_id, wt.topic_name,
+               w.publication_year AS year,
+               COUNT(DISTINCT w.work_id) AS work_count
+        FROM work_topics wt
+        JOIN works w ON wt.work_id = w.work_id
+    """
+    if year_range:
+        q += f" WHERE w.publication_year BETWEEN {year_range[0]} AND {year_range[1]}"
+    q += " GROUP BY wt.topic_id, wt.topic_name, w.publication_year"
+    df = con.execute(q).df()
+    con.close()
+    return df
+
+
+def _load_transitions() -> pd.DataFrame:
+    con = get_connection(read_only=True)
+    try:
+        df = con.execute("SELECT * FROM topic_transitions").df()
+    except Exception:
+        df = pd.DataFrame()
+    con.close()
+    return df
 
 
 def _load_works() -> pd.DataFrame:
@@ -134,6 +163,16 @@ def register_callbacks(app):
             selected_topic=topic_label,
         )
         return elements, comm_options
+
+    @app.callback(
+        Output("alluvial-chart", "figure"),
+        Input("year-slider", "value"),
+        Input("topic-filter", "value"),
+    )
+    def update_alluvial(year_range, selected_topics):
+        df = _load_works_topic_year_stats(tuple(year_range))
+        transitions = _load_transitions()
+        return build_alluvial_figure(df, transitions=transitions, selected_topics=selected_topics)
 
     @app.callback(
         Output("evidence-table", "data"),

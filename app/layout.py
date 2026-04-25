@@ -156,6 +156,16 @@ def build_layout(year_min: int, year_max: int, topic_options: list[dict]) -> htm
                 ], md=5),
             ], className="g-2 mt-2"),
 
+            # Alluvial / topic flow panel
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        html.H3("Topic Flow — Alluvial View"),
+                        dcc.Graph(id="alluvial-chart", config={"displayModeBar": False}),
+                    ], className="view-card"),
+                ], md=12),
+            ], className="g-2 mt-2"),
+
             # Evidence panel
             dbc.Row([
                 dbc.Col([

@@ -69,15 +69,17 @@ def compute_paper_clusters(
 
 def _fetch_papers(
     con: duckdb.DuckDBPyConnection,
+    max_papers: int = 50_000,
 ) -> list[tuple[str, str]]:
-    """Return (work_id, abstract_text) for papers that have an abstract."""
+    """Return (work_id, abstract_text) for top papers by citation count."""
     rows = con.execute("""
         SELECT work_id, abstract_text
         FROM works
         WHERE abstract_text IS NOT NULL
           AND LENGTH(TRIM(abstract_text)) > 0
-        ORDER BY work_id
-    """).fetchall()
+        ORDER BY cited_by_count DESC
+        LIMIT ?
+    """, [max_papers]).fetchall()
     return rows
 
 
@@ -88,13 +90,22 @@ def _embed_abstracts(
     """Generate dense embeddings using a sentence-transformers model."""
     from sentence_transformers import SentenceTransformer
 
-    print(f"  Loading embedding model: {model_name}")
-    model = SentenceTransformer(model_name)
+    import torch
+    if torch.backends.mps.is_available():
+        device = "mps"
+    elif torch.cuda.is_available():
+        device = "cuda"
+    else:
+        device = "cpu"
 
-    print(f"  Encoding {len(abstracts)} abstracts (batch_size={EMBEDDING_BATCH_SIZE})...")
+    print(f"  Loading embedding model: {model_name} (device={device})")
+    model = SentenceTransformer(model_name, device=device)
+
+    batch_size = 32 if device == "mps" else EMBEDDING_BATCH_SIZE
+    print(f"  Encoding {len(abstracts)} abstracts (batch_size={batch_size})...")
     embeddings = model.encode(
         abstracts,
-        batch_size=EMBEDDING_BATCH_SIZE,
+        batch_size=batch_size,
         show_progress_bar=True,
         convert_to_numpy=True,
         normalize_embeddings=True,

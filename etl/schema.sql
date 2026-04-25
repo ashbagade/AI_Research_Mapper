@@ -106,3 +106,16 @@ CREATE TABLE IF NOT EXISTS paper_lda (
     lda_topic_id INTEGER,
     probability  DOUBLE
 );
+
+CREATE TABLE IF NOT EXISTS topic_transitions (
+    src_topic_id   VARCHAR,
+    tgt_topic_id   VARCHAR,
+    src_topic_name VARCHAR,
+    tgt_topic_name VARCHAR,
+    year           INTEGER,
+    next_year      INTEGER,
+    overlap_count  INTEGER,
+    overlap_ratio  DOUBLE,
+    transition_type VARCHAR,
+    PRIMARY KEY (src_topic_id, tgt_topic_id, year)
+);
